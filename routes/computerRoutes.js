@@ -4,6 +4,14 @@ const computerSchema = require("../model/computer"); // importamos el modelo de 
 const router = express.Router();
 //PARAMETROS: lo que se quiere poner para recoger informacion
 //BODY: lo que se quiere escribir para añadir info
+//cors
+router.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+  });
 ///GET all users///
 router.get('/computers', (req,res) => {
     computerSchema //Cargamos el esquema ya creado en model de nuestro cliente
@@ -28,4 +36,16 @@ router.post('/computer', (req,res) => {//nombre de la ruta para crear un nuevo u
     .then((data) => res.json(data))
     .catch((error) => res.json({message: error})); //Guarda el client y da uan respuesta y un error en caso de que no se guarde
 }); 
+//DELETE a client
+router.delete("/computer/:id", (req,res) => { //a la url le añadimos un parámetro id para encontrar al usuario
+    const { id } = req.params; //Extraemos el parámetro ID con req.params del IB objetc y con req.body del cuerpo tomamos el parámetro
+    computerSchema 
+    .remove({id: id}) //eleimiar por id, si quieramos por ID objetc {_id:id}
+    .then((data) => res.json(data))
+    .catch((error) => res.json({message: error})); 
+}); 
+ 
+
+
+
 module.exports = router;
